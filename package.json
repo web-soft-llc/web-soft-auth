@@ -42,7 +42,7 @@
     "unit": "jest test/unit -i --passWithNoTests",
     "integration": "cross-env PGHOST=localhost PGUSER=test_user PGDATABASE=test_db PGPASSWORD=test_password PGPORT=5432 HOST=localhost PORT=8000 jest test/integration -i --passWithNoTests",
     "test": "npm run unit && npm run integration",
-    "prettier": "prettier --write -ignore-path .prettierignore ."
+    "prettier": "prettier --write --ignore-path .prettierignore ."
   },
   "engines": {
     "node": ">=16"
@@ -62,6 +62,6 @@
 "pre-commit": [
   "prettier",
   "lint",
-  "test"
+  "unit"
 ]
 }

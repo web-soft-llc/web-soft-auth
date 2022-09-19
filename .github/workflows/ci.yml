@@ -28,15 +28,13 @@ jobs:
         run: npm i
       - name: Linter
         run: npm run lint
-      - name: Unit tests
-        run: npm run test
       - name: Start database container
         run: npm run docker
       - name: Install forever for starting server
         run: npm install -g forever
       - name: Start server
         run: PGHOST=localhost PGUSER=test_user PGDATABASE=test_db PGPASSWORD=test_password PGPORT=5432 forever start ./src/index.js
-      - name: Integration tests
-        run: npm run integration
+      - name: Run tests
+        run: npm run test
       - name: Stop server
         run: forever stopall
