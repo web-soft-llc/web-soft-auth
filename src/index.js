@@ -1,5 +1,6 @@
 const fs = require('fs');
 const { Server, logger } = require('web-soft-server');
+const { AuthModule } = require('../index');
 const modules = require('./modules');
 
 let server = {};
@@ -9,7 +10,7 @@ const secureStart = async () => {
     const key = fs.readFileSync('/certs/private.key');
     const cert = fs.readFileSync('/certs/cert.crt');
     server = new Server({ host: '0.0.0.0', port: 443, cors: false, key, cert, secure: true });
-    server.start({ ...modules });
+    server.start({ ...modules, auth: AuthModule });
   } catch (error) {
     logger.fatal(error);
   }
@@ -18,7 +19,7 @@ const secureStart = async () => {
 const start = async () => {
   try {
     server = new Server({ host: '0.0.0.0', port: 8000, cors: false });
-    server.start({ ...modules });
+    server.start({ ...modules, auth: AuthModule });
   } catch (error) {
     logger.fatal(error);
   }
