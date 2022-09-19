@@ -1,0 +1,13 @@
+.github
+node_modules
+db
+.editorconfig
+.eslintignore
+.eslintrc
+.gitignore
+.prettierrc.json
+docker-compose.yml
+LICENSE
+nodemon.json
+package.json
+README.md
