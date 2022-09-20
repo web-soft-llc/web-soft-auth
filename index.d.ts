@@ -27,10 +27,10 @@ export interface ModuleSchema {
 
 export interface ServerModule<Class> {
   schema: ModuleSchema;
-  Module: Class;
+  Module: { new (): Class };
 }
 
-export class User {
+declare class User {
   constructor();
   username: string;
   password: string;
@@ -38,39 +38,39 @@ export class User {
   role: string;
 }
 
-export class Session {
+declare class Session {
   constructor();
   username: string;
   token: string;
   createdTime: string;
 }
 
-export class Client {
+declare class Client {
   constructor();
   id: number;
   user: User;
   session: Session;
-  async setUser(): Promise<void>;
-  async emit(event: string, data: any): Promise<>;
+  setUser(): Promise<void>;
+  emit(event: string, data: any): Promise<void>;
   checkConnection(): boolean;
-  async startSession(user: User): Promise<void>;
-  async deleteSession(): Promise<void>;
+  startSession(user: User): Promise<void>;
+  deleteSession(): Promise<void>;
 }
 
-export class Auth {
+declare class Auth {
   constructor();
-  async register(
-    { username: string, password: string },
+  register(
+    data: { username: string; password: string },
     context: Client
   ): Promise<{ username: string; role: string; createdTime: string }>;
-  async login(
-    { username: string, password: string },
+  login(
+    data: { username: string; password: string },
     context: Client
   ): Promise<{ username: string; role: string; createdTime: string }>;
-  async logout(data: any, context: Client): Promise<{ username: string; role: string; createdTime: string }>;
-  async me(data: any, context: Client): Promise<{ username: string; role: string; createdTime: string }>;
-  async changePassword(
-    { oldPassword: string, newPassword: string },
+  logout(data: object, context: Client): Promise<{ username: string; role: string; createdTime: string }>;
+  me(data: object, context: Client): Promise<{ username: string; role: string; createdTime: string }>;
+  changePassword(
+    data: { oldPassword: string; newPassword: string },
     context: Client
   ): Promise<{ username: string; role: string; createdTime: string }>;
 }
