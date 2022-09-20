@@ -4,7 +4,7 @@
     "name": "DonVietnam",
     "email": "don.vietnam.js@gmail.com"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Authentication module for web-soft-server.",
   "keywords": [
     "auth",
@@ -25,7 +25,7 @@
     "email": "don.vietnam.js@gmail.com"
   },
   "homepage": "https://github.com/web-soft-llc/web-soft-auth",
-  "main": "src/index.js",
+  "main": "index.js",
   "types": "index.d.ts",
   "files": [
     "lib/",
