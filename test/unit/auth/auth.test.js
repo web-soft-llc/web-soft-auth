@@ -51,3 +51,38 @@ test('AuthChangePassword_CallUserServiceUpdatePassword_ValidPassword', async () 
   );
   expect(userService.updatePassword.mock.calls.length).toEqual(1);
 });
+
+test('AuthConfirm_ReturnTrue_ValildPassword', async () => {
+  const auth = createAuth();
+  await expect(auth.confirm('testPassword', { username: 'username', password: 'testPassword' })).resolves.toBe(true);
+});
+
+test('AuthConfirm_ThrowAuthError_InvalidPassword', async () => {
+  const auth = createAuth();
+  await expect(
+    auth.confirm('incorrectPassword', { username: 'username', password: 'testPassword' })
+  ).rejects.toThrowError(/failed/i);
+});
+
+test('AuthConfirm_CallLockoutFail_InvalidPasswordAndUserExist', async () => {
+  const auth = createAuth();
+  auth.lockoutManager.fail = jest.fn(() => {});
+  try {
+    await auth.confirm('incorrectPassword', { username: 'username', password: 'testPassword' });
+  } catch (err) {}
+  expect(auth.lockoutManager.fail.mock.calls.length).toBe(1);
+});
+
+test('AuthConfirm_NotCallLockoutFail_InvalidPasswordAndUserNotExist', async () => {
+  const auth = createAuth();
+  auth.lockoutManager.fail = jest.fn(() => {});
+  try {
+    await auth.confirm('incorrectPassword', { password: 'testPassword' });
+  } catch (err) {}
+  expect(auth.lockoutManager.fail.mock.calls.length).toBe(0);
+});
+
+test('AuthConfirm_ThrowError_InvalidPassword', async () => {
+  const auth = createAuth();
+  expect(auth.confirm('incorrectPassword', { password: 'testPassword' })).rejects.toThrowError(/failed/i);
+});

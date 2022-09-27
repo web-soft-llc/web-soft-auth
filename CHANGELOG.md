@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- ## [Unreleased] -->
 
+### Changed
+
+- Password now checking for minimum and maximum length when created.
+- Password now checking against top 1000 most popular password when created.
+- User's account now can be locked for a wile after several faild login attempts.
+
 ## [1.0.1] - 2022-09-20
 
 ### Changed
