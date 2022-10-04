@@ -4,13 +4,31 @@ const { call, clearTables, closeDatabaseConnection, addTestData, clearCookies, a
 const testUserData = {
   username: '89138762355',
   password:
-    '$scrypt$N=32768,r=8,p=1,maxmem=67108864$WDvlWv547xK6YjokhmlArebEs92/Ug+a8GtU2b+ER84$11RTxyQMbuyft3XJ7nethkvNALfSREfemmr0phYAvam8MC4qp0lSAe91DDmZC2FufT0RKTo18p8do+jj+M8oMw',
+    'scrypt$N=32768,r=8,p=1,maxmem=67108864$WDvlWv547xK6YjokhmlArebEs92/Ug+a8GtU2b+ER84$11RTxyQMbuyft3XJ7nethkvNALfSREfemmr0phYAvam8MC4qp0lSAe91DDmZC2FufT0RKTo18p8do+jj+M8oMw',
   role: 'user'
 };
 
-describe('Tests for auth module.', () => {
+const testLockUserData = {
+  username: '89138762345',
+  password:
+    'scrypt$N=32768,r=8,p=1,maxmem=67108864$WDvlWv547xK6YjokhmlArebEs92/Ug+a8GtU2b+ER84$11RTxyQMbuyft3XJ7nethkvNALfSREfemmr0phYAvam8MC4qp0lSAe91DDmZC2FufT0RKTo18p8do+jj+M8oMw',
+  role: 'user'
+};
+
+const testLockUserData2 = {
+  username: '89138762343',
+  password:
+    'scrypt$N=32768,r=8,p=1,maxmem=67108864$WDvlWv547xK6YjokhmlArebEs92/Ug+a8GtU2b+ER84$11RTxyQMbuyft3XJ7nethkvNALfSREfemmr0phYAvam8MC4qp0lSAe91DDmZC2FufT0RKTo18p8do+jj+M8oMw',
+  role: 'user'
+};
+
+const longPassword =
+  'passwordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpassword';
+
+describe('Auth', () => {
   beforeEach(async () => {
     await clearTables('SystemUser', 'Session');
+    clearCookies();
   });
 
   test('AuthLogin_SuccessfulRequest', async () => {
@@ -43,6 +61,16 @@ describe('Tests for auth module.', () => {
     );
   });
 
+  test('AuthLogin_LockUser_ManyFailAttempts', async () => {
+    const incorrect = { username: testLockUserData.username, password: 'incorrect_password' };
+    await addTestData('SystemUser', testLockUserData);
+    await call('auth/login', incorrect);
+    await call('auth/login', incorrect);
+    await expect(call('auth/login', incorrect)).resolves.toEqual(
+      expect.objectContaining({ code: expect.any(Number), message: expect.stringMatching(/attempts/i) })
+    );
+  });
+
   test('AuthRegister_SuccessfulRequest', async () => {
     await expect(call('auth/register', { username: '89138762355', password: 'test_password' })).resolves.toEqual(
       expect.objectContaining({
@@ -58,6 +86,33 @@ describe('Tests for auth module.', () => {
       expect.objectContaining({
         code: expect.any(Number),
         message: expect.stringContaining('Invalid')
+      })
+    );
+  });
+
+  test('AuthRegister_InvalidParams_ShortPassword', async () => {
+    await expect(call('auth/register', { username: '89138762355', password: 'password' })).resolves.toEqual(
+      expect.objectContaining({
+        code: expect.any(Number),
+        message: expect.stringMatching(/strength/i)
+      })
+    );
+  });
+
+  test('AuthRegister_InvalidParams_LongPassword', async () => {
+    await expect(call('auth/register', { username: '89138762355', password: longPassword })).resolves.toEqual(
+      expect.objectContaining({
+        code: expect.any(Number),
+        message: expect.stringMatching(/strength/i)
+      })
+    );
+  });
+
+  test('AuthRegister_InvalidParams_WeakPassword', async () => {
+    await expect(call('auth/register', { username: '89138762355', password: 'longPassword' })).resolves.toEqual(
+      expect.objectContaining({
+        code: expect.any(Number),
+        message: expect.stringMatching(/strength/i)
       })
     );
   });
@@ -126,6 +181,16 @@ describe('Tests for auth module.', () => {
         role: 'user',
         createdTime: expect.any(String)
       })
+    );
+  });
+
+  test('AuthChangePassword_LockUser_ManyFailAttempts', async () => {
+    const incorrect = { oldPassword: 'incorrect_password', newPassword: 'password' };
+    await auth('user', testLockUserData2);
+    await call('auth/changePassword', incorrect);
+    await call('auth/changePassword', incorrect);
+    await expect(call('auth/changePassword', incorrect)).resolves.toEqual(
+      expect.objectContaining({ code: expect.any(Number), message: expect.stringMatching(/attempts/i) })
     );
   });
 

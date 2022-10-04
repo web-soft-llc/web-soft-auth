@@ -76,7 +76,7 @@ const request = (data, hostname, port) =>
       },
       (response) => {
         let data = '';
-        cookies = parseCookies(response.headers['set-cookie'] || []);
+        cookies += parseCookies(response.headers['set-cookie'] || []);
         response.on('data', (chunk) => {
           data += chunk;
         });
@@ -99,17 +99,17 @@ const call = async (method, params) => {
   return result ? result : error ? error : {};
 };
 
-const auth = async (role) => {
-  const user = {
+const auth = async (role, preferUser) => {
+  const user = preferUser || {
     username: '89138762355',
     password:
-      '$scrypt$N=32768,r=8,p=1,maxmem=67108864$WDvlWv547xK6YjokhmlArebEs92/Ug+a8GtU2b+ER84$11RTxyQMbuyft3XJ7nethkvNALfSREfemmr0phYAvam8MC4qp0lSAe91DDmZC2FufT0RKTo18p8do+jj+M8oMw',
+      'scrypt$N=32768,r=8,p=1,maxmem=67108864$WDvlWv547xK6YjokhmlArebEs92/Ug+a8GtU2b+ER84$11RTxyQMbuyft3XJ7nethkvNALfSREfemmr0phYAvam8MC4qp0lSAe91DDmZC2FufT0RKTo18p8do+jj+M8oMw',
     role
   };
 
   const session = {
     token: '409715e3-9c5e-474a-8070-884b23ac3a6a',
-    username: '89138762355'
+    username: user.username
   };
 
   clearCookies();

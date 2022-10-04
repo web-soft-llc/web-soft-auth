@@ -4,7 +4,7 @@
     "name": "DonVietnam",
     "email": "don.vietnam.js@gmail.com"
   },
-  "version": "1.0.1",
+  "version": "1.2.0",
   "description": "Authentication module for web-soft-server.",
   "keywords": [
     "auth",
@@ -57,11 +57,13 @@
     "prettier": "2.5.1",
     "pre-commit": "^1.2.2",
     "web-soft-server": "^2.0.2"
-},
-
-"pre-commit": [
-  "prettier",
-  "lint",
-  "unit"
-]
+ },
+ "peerDependencies": {
+  "web-soft-server": "^2.0.2"
+ },
+  "pre-commit": [
+    "prettier",
+    "lint",
+    "unit"
+  ]
 }
