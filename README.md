@@ -1,3 +1,3 @@
 # web-soft-auth
 
-Authentication module for web-soft-server.
+[Документация на русском языке.](lang/README-RU.md)

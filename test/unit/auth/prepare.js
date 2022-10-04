@@ -1,6 +1,7 @@
 const { security } = require('../../../lib/security');
 const { userService } = require('web-soft-server');
 const { Auth, LockoutManager, LockoutRecord, OBSERVATION_WINDOW, LOCKOUT_THRESHOLD } = require('../../../lib/auth');
+const { MessageService, TwoFactorAuth, CODE_TIMEOUT } = require('../../../lib/two-factor-auth');
 
 jest.mock('../../../lib/security', () => {
   return {
@@ -36,9 +37,17 @@ jest.mock('web-soft-server', () => {
         code: 40600,
         message: 'Problem with password strength.'
       },
-      ACCOUNT_LOCKOUT: {
+      ACCOUNT_LOCKOUT_ERROR: {
         code: 40601,
         message: 'Too many fail attempts to login.'
+      },
+      CODE_NOT_FOUND_ERROR: {
+        code: 40602,
+        message: 'No code found.'
+      },
+      CODE_EXISTS_ERROR: {
+        code: 40603,
+        message: 'Code already exists, try later.'
       }
     },
     ConnectionError: class ConnectionError extends Error {
@@ -80,6 +89,12 @@ const createLockoutRecord = (attemps, lock = false, lockTime = 0) => {
   return result;
 };
 
+const createMessageService = (transport) => {
+  const result = new MessageService();
+  result.transport = transport || null;
+  return result;
+};
+
 const getContext = (session = {}, user = {}) => {
   const result = {};
   result.startSession = jest.fn(() => {});
@@ -92,8 +107,10 @@ module.exports = {
   createAuth,
   createLockoutManager,
   createLockoutRecord,
+  createMessageService,
   getContext,
   userService,
   OBSERVATION_WINDOW,
-  LOCKOUT_THRESHOLD
+  LOCKOUT_THRESHOLD,
+  CODE_TIMEOUT
 };
