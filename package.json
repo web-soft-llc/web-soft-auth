@@ -4,7 +4,7 @@
     "name": "DonVietnam",
     "email": "don.vietnam.js@gmail.com"
   },
-  "version": "1.0.1",
+  "version": "1.2.0",
   "description": "Authentication module for web-soft-server.",
   "keywords": [
     "auth",

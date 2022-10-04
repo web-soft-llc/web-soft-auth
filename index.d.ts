@@ -30,6 +30,10 @@ export interface ServerModule<Class> {
   Module: { new (): Class };
 }
 
+export interface MessageTransport {
+  send(destination: string, code: number): Promise<void>;
+}
+
 declare class User {
   constructor();
   username: string;
@@ -57,8 +61,32 @@ declare class Client {
   deleteSession(): Promise<void>;
 }
 
-declare class Auth {
+declare class LockoutRecord {
   constructor();
+  fail(): void;
+  freeTime(): number;
+  isLock(): boolean;
+  renew(time: number): void;
+}
+
+export declare class MessageService {
+  constructor();
+  setTransport(transport: MessageTransport): void;
+  setCodeTimeOut(timeout: number): void;
+  send(destination: string): Promise<string>;
+  checkDestination(destination: string): boolean;
+  getCode(destination: string): boolean;
+  deleteCode(destination: string): void;
+}
+
+export declare class LockoutManager {
+  constructor();
+  access(username: string): boolean;
+  fail(username: string): void;
+}
+
+export declare class Auth {
+  constructor(manager: LockoutManager);
   register(
     data: { username: string; password: string },
     context: Client
@@ -67,7 +95,7 @@ declare class Auth {
     data: { username: string; password: string },
     context: Client
   ): Promise<{ username: string; role: string; createdTime: string }>;
-  logout(data: object, context: Client): Promise<{ username: string; role: string; createdTime: string }>;
+  logout(data: object, context: Client): Promise<void>;
   me(data: object, context: Client): Promise<{ username: string; role: string; createdTime: string }>;
   changePassword(
     data: { oldPassword: string; newPassword: string },
@@ -75,4 +103,22 @@ declare class Auth {
   ): Promise<{ username: string; role: string; createdTime: string }>;
 }
 
+export declare class TwoFactorAuth extends Auth {
+  constructor(service: MessageService, manager: LockoutManager);
+  register(
+    data: { username: string; password: string; code: number },
+    context: Client
+  ): Promise<{ username: string; role: string; createdTime: string }>;
+  restore(data: { username: string; password: string; code: number }): Promise<string>;
+  send(data: { destination: string }): Promise<string>;
+}
+
 export const AuthModule: ServerModule<Auth>;
+export const TwoFactorAuthModule: ServerModule<TwoFactorAuth>;
+
+export const messageService: MessageService;
+export const lockoutManager: LockoutManager;
+
+export const CODE_TIMEOUT: number;
+export const OBSERVATION_WINDOW: number;
+export const LOCKOUT_THRESHOLD: number;
