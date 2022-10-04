@@ -36,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Security class for password encoding and decoding.
 - Schema and types for Authentication module.
 
-[unreleased]: https://github.com/web-soft-llc/web-soft-server/compare/v1.2.0...master
-[1.2.0]: https://github.com/web-soft-llc/web-soft-server/releases/tag/v1.0.1...v1.2.0
-[1.0.1]: https://github.com/web-soft-llc/web-soft-server/releases/tag/v1.0.0...v1.0.1
-[1.0.0]: https://github.com/web-soft-llc/web-soft-server/releases/tag/v1.0.0
+[unreleased]: https://github.com/web-soft-llc/web-soft-auth/compare/v1.2.0...master
+[1.2.0]: https://github.com/web-soft-llc/web-soft-auth/compare/v1.0.1...v1.2.0
+[1.0.1]: https://github.com/web-soft-llc/web-soft-auth/compare/v1.0.0...v1.0.1
+[1.0.0]: https://github.com/web-soft-llc/web-soft-auth/releases/tag/v1.0.0
